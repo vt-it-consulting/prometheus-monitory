@@ -1,0 +1,36 @@
+groups:
+- name: alert.rules
+  rules:
+  - alert: InstanceDown
+    expr: up == 0
+    for: 1m
+    labels:
+      severity: "Critical"
+    annotations:
+      summary: "Endpoint {{ $labels.instance }} down"
+      description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 1 minutes."
+
+  # - alert: DataDiskSpace15%Free
+  #    expr: 100 - ((node_filesystem_avail_bytes{device="/dev/mapper/vg01-data",mountpoint="/mnt/data"} * 100) / node_filesystem_size_bytes{device="/dev/mapper/vg01-data",mountpoint="/mnt/data"}) > 85
+  #    labels:
+  #      severity: moderate
+  #    annotations:
+  #      summary: "Instance {{ $labels.instance }} is low on disk space"
+  #      description: "diskspace on {{ $labels.instance }} is used over {{ $value }}% ."
+
+  # - alert: RootDiskSpace10%Free
+  #    expr: 100 - ((node_filesystem_avail_bytes{device="/dev/mapper/vg0-root",mountpoint="/etc/hostname"} * 100) / node_filesystem_size_bytes{device="/dev/mapper/vg0-root",mountpoint="/etc/hostname"}) > 90
+  #    labels:
+  #      severity: moderate
+  #    annotations:
+  #      summary: "Instance {{ $labels.instance }} is low on disk space"
+  #      description: "diskspace on {{ $labels.instance }} is used over {{ $value }}% ."
+
+  - alert: HostHighCpuLoad
+    expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[2m])) * 100) > 85
+    for: 0m
+    labels:
+      severity: warning
+    annotations:
+      summary: Host high CPU load (instance {{ $labels.instance }})
+      description: "CPU load is > 85%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"

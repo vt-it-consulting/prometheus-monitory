@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: 'Dashboards'
+    orgId: 1
+    type: file
+    folder: ''
+    allowUiUpdates: true
+    editable: true
+    options:
+      path: /etc/grafana/provisioning/dashboards
